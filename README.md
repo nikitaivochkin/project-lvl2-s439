@@ -4,4 +4,4 @@
 
 gendiff
 
-[![First Step]](https://asciinema.org/a/pO2BCTtTjwhMRgYS07NP8dH2c)
+[![asciicast](https://asciinema.org/a/pO2BCTtTjwhMRgYS07NP8dH2c.svg)](https://asciinema.org/a/pO2BCTtTjwhMRgYS07NP8dH2c)
