@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import fs from 'fs';
 import _ from 'lodash';
 
@@ -7,18 +6,18 @@ const conditions = [
     check: (keysBefore, keysAfter, cKey) => (_.has(keysBefore, cKey) && _.has(keysAfter, cKey)),
     action: (keysBefore, keysAfter, cKey) => {
       if (keysBefore[cKey] === keysAfter[cKey]) {
-        return { flag: ' ', cKey, value: keysBefore[cKey] };
+        return [{ flag: ' ', cKey, value: keysBefore[cKey] }];
       } return [{ flag: '-', cKey, value: keysBefore[cKey] },
         { flag: '+', cKey, value: keysAfter[cKey] }];
     },
   },
   {
     check: (keysBefore, keysAfter, cKey) => (_.has(keysBefore, cKey) && !_.has(keysAfter, cKey)),
-    action: (keysBefore, keysAfter, cKey) => ({ flag: '-', cKey, value: keysBefore[cKey] }),
+    action: (keysBefore, keysAfter, cKey) => ([{ flag: '-', cKey, value: keysBefore[cKey] }]),
   },
   {
     check: (keysBefore, keysAfter, cKey) => (!_.has(keysBefore, cKey) && _.has(keysAfter, cKey)),
-    action: (keysBefore, keysAfter, cKey) => ({ flag: '+', cKey, value: keysAfter[cKey] }),
+    action: (keysBefore, keysAfter, cKey) => ([{ flag: '+', cKey, value: keysAfter[cKey] }]),
   },
 ];
 
@@ -33,13 +32,7 @@ export default (pathFileBefore, pathFileAfter) => {
     const { action } = conditions.find(({ check }) => check(objFileBefore, objFileAfter, key));
     return action(objFileBefore, objFileAfter, key);
   });
-
-  const getResult = ast => ast.map((el) => {
-    if (el instanceof Array) {
-      return getResult(el).join('\n');
-    }
-    return `  ${el.flag} ${el.cKey}: ${el.value}`;
-  });
+  const getResult = ast => ast.map(el => el.map(obj => `  ${obj.flag} ${obj.cKey}: ${obj.value}`).join('\n'));
 
   return `{\n${getResult(mapped).join('\n')}\n}`;
 };
