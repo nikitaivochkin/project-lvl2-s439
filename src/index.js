@@ -28,11 +28,11 @@ export default (pathFileBefore, pathFileAfter) => {
   const keysAfter = Object.keys(objFileAfter);
   const unionKeys = _.union(keysBefore, keysAfter);
 
-  const mapped = unionKeys.map((key) => {
+  const ast = unionKeys.map((key) => {
     const { action } = conditions.find(({ check }) => check(objFileBefore, objFileAfter, key));
     return action(objFileBefore, objFileAfter, key);
   });
-  const getResult = ast => ast.map(el => el.map(obj => `  ${obj.flag} ${obj.cKey}: ${obj.value}`).join('\n'));
+  const parceResult = data => data.map(el => el.map(obj => `  ${obj.flag} ${obj.cKey}: ${obj.value}`).join('\n'));
 
-  return `{\n${getResult(mapped).join('\n')}\n}`;
+  return `{\n${parceResult(ast).join('\n')}\n}`;
 };
