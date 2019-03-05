@@ -1,0 +1,10 @@
+{
+  - version: 7.1.0
+  + version: 7.2.0
+    resolved: https://registry.npmjs.org
+  - integrity: qwerty
+  + integrity: qwertyqwerty
+    dev: true
+  - requires: @babel/helper-get-function-arity
+  + host: hexlet.io
+}
