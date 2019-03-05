@@ -32,7 +32,7 @@ export default (pathFileBefore, pathFileAfter) => {
     const { action } = conditions.find(({ check }) => check(objFileBefore, objFileAfter, key));
     return action(objFileBefore, objFileAfter, key);
   });
-  const parceResult = data => data.map(el => el.map(obj => `  ${obj.flag} ${obj.cKey}: ${obj.value}`).join('\n'));
+  const parseResult = data => data.map(el => el.map(obj => `  ${obj.flag} ${obj.cKey}: ${obj.value}`).join('\n'));
 
-  return `{\n${parceResult(ast).join('\n')}\n}`;
+  return `{\n${parseResult(ast).join('\n')}\n}`;
 };
