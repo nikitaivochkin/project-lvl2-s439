@@ -9,3 +9,6 @@ step 1
 
 step 2
 [![asciicast](https://asciinema.org/a/z7uaavuCDCrbzb9ZOUXWWaI0w.svg)](https://asciinema.org/a/z7uaavuCDCrbzb9ZOUXWWaI0w)
+
+step 3
+[![asciicast](https://asciinema.org/a/tVzoCmvQlJGUVJW0OrX7dXeHR.svg)](https://asciinema.org/a/tVzoCmvQlJGUVJW0OrX7dXeHR)
