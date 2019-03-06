@@ -26,7 +26,6 @@ const conditions = [
 export default (pathFileBefore, pathFileAfter) => {
   const objFileBefore = findParser(pathFileBefore).action(pathFileBefore);
   const objFileAfter = findParser(pathFileAfter).action(pathFileAfter);
-
   const keysBefore = Object.keys(objFileBefore);
   const keysAfter = Object.keys(objFileAfter);
   const unionKeys = _.union(keysBefore, keysAfter);
