@@ -1,5 +1,6 @@
-import fs from 'fs';
 import _ from 'lodash';
+import findParser from './parser';
+
 
 const conditions = [
   {
@@ -21,9 +22,11 @@ const conditions = [
   },
 ];
 
+
 export default (pathFileBefore, pathFileAfter) => {
-  const objFileBefore = JSON.parse(fs.readFileSync(pathFileBefore, 'utf8'));
-  const objFileAfter = JSON.parse(fs.readFileSync(pathFileAfter, 'utf8'));
+  const objFileBefore = findParser(pathFileBefore).action(pathFileBefore);
+  const objFileAfter = findParser(pathFileAfter).action(pathFileAfter);
+
   const keysBefore = Object.keys(objFileBefore);
   const keysAfter = Object.keys(objFileAfter);
   const unionKeys = _.union(keysBefore, keysAfter);
