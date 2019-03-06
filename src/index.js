@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import fs from 'fs';
-import findParser from './parser';
+import findParser from './parsers';
 
 
 const conditions = [
