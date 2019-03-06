@@ -1,0 +1,7 @@
+{
+  "version": "7.1.0",
+  "resolved": "https://registry.npmjs.org",
+  "integrity": "qwerty",
+  "dev": true,
+  "requires": "@babel/helper-get-function-arity"
+}
