@@ -34,7 +34,7 @@ export default (pathFileBefore, pathFileAfter) => {
     const { action } = conditions.find(({ check }) => check(objFileBefore, objFileAfter, key));
     return action(objFileBefore, objFileAfter, key);
   });
-  const parseResult = data => data.map(el => el.map(obj => `  ${obj.flag} ${obj.cKey}: ${obj.value}`).join('\n'));
+  const render = data => data.map(el => el.map(obj => `  ${obj.flag} ${obj.cKey}: ${obj.value}`).join('\n'));
 
-  return `{\n${parseResult(ast).join('\n')}\n}`;
+  return `{\n${render(ast).join('\n')}\n}`;
 };
