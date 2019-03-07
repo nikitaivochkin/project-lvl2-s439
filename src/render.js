@@ -1,6 +1,9 @@
 import _ from 'lodash';
 
-const getIndent = level => ' '.repeat(level * 4);
+const getIndent = (level) => {
+  const deepIndent = 4;
+  return ' '.repeat(level * deepIndent);
+};
 
 const stringify = (value, level) => {
   const valueKeys = Object.keys(value);
