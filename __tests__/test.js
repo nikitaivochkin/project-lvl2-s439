@@ -11,7 +11,6 @@ test.each([
   ['before1.yaml', 'after1.yaml', 'expected1.txt'],
   ['before.ini', 'after.ini', 'expected.txt'],
   ['before1.ini', 'after1.ini', 'expected1.txt'],
-  ['beforeTree.json', 'afterTree.json', 'expected2.txt'],
 ])(
   '.gendiff(%#)',
   (fileNameBefore, fileNameAfter, expectedValue) => {
