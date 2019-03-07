@@ -14,9 +14,9 @@ test.each([
   ['beforeTree.json', 'afterTree.json', 'expected2.txt'],
 ])(
   '.gendiff(%#)',
-  (contentBefore, contentAfter, expectedValue) => {
+  (fileNameBefore, fileNameAfter, expectedValue) => {
     const getPath = fileName => path.join('__tests__', '__fixtures__', `${fileName}`);
     const expected = fs.readFileSync(getPath(expectedValue), 'utf8');
-    expect(gendiff(getPath(contentBefore), getPath(contentAfter))).toBe(expected);
+    expect(gendiff(getPath(fileNameBefore), getPath(fileNameAfter))).toBe(expected);
   },
 );
