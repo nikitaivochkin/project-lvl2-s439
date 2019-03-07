@@ -4,7 +4,6 @@ import path from 'path';
 import findParser from './parsers';
 import renderAst from './render';
 
-
 const actions = [
   {
     type: 'parent',

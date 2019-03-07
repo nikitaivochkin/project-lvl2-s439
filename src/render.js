@@ -11,9 +11,7 @@ const stringify = (value, level) => {
     return value;
   }
   const values = valueKeys.map(el => ` ${el}: ${stringify(value[el], level)}`);
-  const resultetValue = _.flatten(values).join('\n');
-
-  return `{\n  ${getIndent(level + 1)} ${resultetValue}\n${getIndent(level + 1)}}`;
+  return `{\n  ${getIndent(level + 1)} ${_.flatten(values).join('\n')}\n${getIndent(level + 1)}}`;
 };
 
 const renderNode = (node, indentLevel) => {
