@@ -7,7 +7,7 @@ const getIndent = (level) => {
 
 const stringify = (value, level) => {
   const valueKeys = Object.keys(value);
-  if (!_.isPlainObject(value)) {
+  if (!(value instanceof Object)) {
     return value;
   }
   const values = valueKeys.map(el => ` ${el}: ${stringify(value[el], level)}`);
