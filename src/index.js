@@ -2,40 +2,58 @@ import _ from 'lodash';
 import fs from 'fs';
 import path from 'path';
 import findParser from './parsers';
+import renderAst from './render';
 
 
-const conditions = [
+const actions = [
   {
-    check: (keysBefore, keysAfter, cKey) => (_.has(keysBefore, cKey) && _.has(keysAfter, cKey)),
-    action: (keysBefore, keysAfter, cKey) => {
-      if (keysBefore[cKey] === keysAfter[cKey]) {
-        return [{ flag: ' ', cKey, value: keysBefore[cKey] }];
-      } return [{ flag: '-', cKey, value: keysBefore[cKey] },
-        { flag: '+', cKey, value: keysAfter[cKey] }];
-    },
+    type: 'parent',
+    check: (objBefore, objAfter, cKey) => objBefore[cKey] instanceof Object
+      && objAfter[cKey] instanceof Object,
+    action: (valueBefore, valueAfter, func) => func(valueBefore, valueAfter),
   },
   {
-    check: (keysBefore, keysAfter, cKey) => (_.has(keysBefore, cKey) && !_.has(keysAfter, cKey)),
-    action: (keysBefore, keysAfter, cKey) => ([{ flag: '-', cKey, value: keysBefore[cKey] }]),
+    type: 'unchanged',
+    check: (objBefore, objAfter, cKey) => (_.has(objBefore, cKey) && _.has(objAfter, cKey))
+      && (objBefore[cKey] === objAfter[cKey]),
+    action: _.identity,
   },
   {
-    check: (keysBefore, keysAfter, cKey) => (!_.has(keysBefore, cKey) && _.has(keysAfter, cKey)),
-    action: (keysBefore, keysAfter, cKey) => ([{ flag: '+', cKey, value: keysAfter[cKey] }]),
+    type: 'changed',
+    check: (objBefore, objAfter, cKey) => (_.has(objBefore, cKey) && _.has(objAfter, cKey))
+      && (objBefore[cKey] !== objAfter[cKey]),
+    action: (valueBefore, valueAfter) => [valueBefore, valueAfter],
+  },
+  {
+    type: 'added',
+    check: (objBefore, ObjAfter, cKey) => !_.has(objBefore, cKey) && _.has(ObjAfter, cKey),
+    action: (valueBefore, valueAfter) => valueAfter,
+  },
+  {
+    type: 'deleted',
+    check: (objBefore, ObjAfter, cKey) => _.has(objBefore, cKey) && !_.has(ObjAfter, cKey),
+    action: valueBefore => valueBefore,
   },
 ];
 
 export default (pathFileBefore, pathFileAfter) => {
   const objFileBefore = findParser(path.extname(pathFileBefore))(fs.readFileSync(pathFileBefore, 'utf8'));
   const objFileAfter = findParser(path.extname(pathFileBefore))(fs.readFileSync(pathFileAfter, 'utf8'));
-  const keysBefore = Object.keys(objFileBefore);
-  const keysAfter = Object.keys(objFileAfter);
-  const unionKeys = _.union(keysBefore, keysAfter);
 
-  const ast = unionKeys.map((key) => {
-    const { action } = conditions.find(({ check }) => check(objFileBefore, objFileAfter, key));
-    return action(objFileBefore, objFileAfter, key);
-  });
-  const render = data => data.map(el => el.map(obj => `  ${obj.flag} ${obj.cKey}: ${obj.value}`).join('\n'));
-
-  return `{\n${render(ast).join('\n')}\n}`;
+  const builderAst = (objBefore, objAfter) => {
+    const keysBefore = Object.keys(objBefore);
+    const keysAfter = Object.keys(objAfter);
+    const unionKeys = _.union(keysBefore, keysAfter);
+    const ast = unionKeys.reduce((acc, key) => {
+      const { type, action } = actions.find(({ check }) => check(objBefore, objAfter, key));
+      const root = {
+        type,
+        key,
+        value: action(objBefore[key], objAfter[key], builderAst),
+      };
+      return [...acc, root];
+    }, []);
+    return ast;
+  };
+  return renderAst(builderAst(objFileBefore, objFileAfter));
 };
