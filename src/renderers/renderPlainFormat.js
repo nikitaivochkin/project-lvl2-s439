@@ -3,22 +3,19 @@ import _ from 'lodash';
 const renderValue = (value) => {
   if (value instanceof Object) {
     return '[complex value]';
-  } return (typeof value === 'boolean' || typeof value === 'number') ? value : `'${value}'`;
+  } return typeof value === 'string' ? `'${value}'` : value;
 };
 
-const buildPath = (ast, str) => {
-  const result = ast.map((obj) => {
-    const iter = (el, ancestry, acc) => {
-      const newAncestry = [...ancestry, el.key];
-      if (el.type === 'parent') {
-        return el.children.reduce((nAcc, nn) => iter(nn, newAncestry, nAcc), acc);
-      }
-      return el.key.includes(str) ? [...acc, newAncestry] : acc;
-    };
-    return iter(obj, '', []);
-  });
-  return result;
-};
+const buildPath = (ast, str) => ast.map((obj) => {
+  const iter = (el, ancestry, acc) => {
+    const newAncestry = [...ancestry, el.key];
+    if (el.type === 'parent') {
+      return el.children.reduce((nAcc, nn) => iter(nn, newAncestry, nAcc), acc);
+    }
+    return el.key.includes(str) ? [...acc, newAncestry] : acc;
+  };
+  return iter(obj, '', []);
+});
 
 const actions = {
   parent: (_data, key, _value, children, f) => f(children, key),
