@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { car, cdr } from 'hexlet-pairs';
 
 const getIndent = (level) => {
   const deepIndent = 4;
@@ -16,12 +17,16 @@ const stringify = (value, level) => {
 
 const actions = [
   {
+    typeNode: 'parent',
+    action: (key, value, indentLevel, f) => `   ${getIndent(indentLevel)} ${key}: {\n${f(value, indentLevel + 1)}\n    ${getIndent(indentLevel)}}`,
+  },
+  {
     typeNode: 'unchanged',
     action: (key, value, indentLevel) => ` ${getIndent(indentLevel)} ${' '} ${key}: ${stringify(value, indentLevel)}`,
   },
   {
     typeNode: 'changed',
-    action: (key, value, indentLevel) => ` ${getIndent(indentLevel)} ${'-'} ${key}: ${stringify(value[0], indentLevel)}\n ${getIndent(indentLevel)} ${'+'} ${key}: ${stringify(value[1], indentLevel)}`,
+    action: (key, value, indentLevel) => ` ${getIndent(indentLevel)} ${'-'} ${key}: ${stringify(car(value), indentLevel)}\n ${getIndent(indentLevel)} ${'+'} ${key}: ${stringify(cdr(value), indentLevel)}`,
   },
   {
     typeNode: 'added',
@@ -33,19 +38,13 @@ const actions = [
   },
 ];
 
-const renderNode = (node, indentLevel) => {
+const renderNode = (node, indentLevel, renderAst) => {
   const { type, key, value } = node;
   const { action } = actions.find(({ typeNode }) => typeNode === type);
-  return action(key, value, indentLevel);
+  return action(key, value, indentLevel, renderAst);
 };
 
 export default (data) => {
-  const renderAst = (ast, indent = 0) => _.flatten(ast.map((obj) => {
-    const { type, key, value } = obj;
-    if (type === 'parent') {
-      return `   ${getIndent(indent)} ${key}: {\n${renderAst(value, indent + 1)}\n    ${getIndent(indent)}}`;
-    }
-    return renderNode(obj, indent);
-  })).join('\n');
+  const renderAst = (ast, indent = 0) => _.flatten(ast.map(obj => renderNode(obj, indent, renderAst))).join('\n');
   return `{\n${renderAst(data)}\n}`;
 };
