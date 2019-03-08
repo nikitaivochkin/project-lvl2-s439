@@ -6,16 +6,15 @@ const renderValue = (value) => {
   } return typeof value === 'string' ? `'${value}'` : value;
 };
 
-const buildPath = (ast, str) => ast.map((obj) => {
-  const iter = (el, ancestry, acc) => {
-    const newAncestry = [...ancestry, el.key];
-    if (el.type === 'parent') {
-      return el.children.reduce((nAcc, nn) => iter(nn, newAncestry, nAcc), acc);
-    }
-    return el.key.includes(str) ? [...acc, newAncestry] : acc;
-  };
-  return iter(obj, '', []);
-});
+const iter = (el, ancestry, acc, str) => {
+  const newAncestry = [...ancestry, el.key];
+  if (el.type === 'parent') {
+    return el.children.reduce((nAcc, nn) => iter(nn, newAncestry, nAcc, str), acc);
+  }
+  return el.key.includes(str) ? [...acc, newAncestry] : acc;
+};
+
+const buildPath = (ast, str) => ast.map(obj => iter(obj, '', [], str));
 
 const actions = {
   parent: (_data, key, _value, children, f) => f(children, key),
