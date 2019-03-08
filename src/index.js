@@ -12,18 +12,6 @@ const actions = [
     action: (valueBefore, valueAfter, func) => func(valueBefore, valueAfter),
   },
   {
-    type: 'unchanged',
-    check: (objBefore, objAfter, cKey) => (_.has(objBefore, cKey) && _.has(objAfter, cKey))
-      && (objBefore[cKey] === objAfter[cKey]),
-    action: _.identity,
-  },
-  {
-    type: 'changed',
-    check: (objBefore, objAfter, cKey) => (_.has(objBefore, cKey) && _.has(objAfter, cKey))
-      && (objBefore[cKey] !== objAfter[cKey]),
-    action: (valueBefore, valueAfter) => ({ keyBefore: valueBefore, keyAfter: valueAfter }),
-  },
-  {
     type: 'added',
     check: (objBefore, ObjAfter, cKey) => !_.has(objBefore, cKey) && _.has(ObjAfter, cKey),
     action: (_valueBefore, valueAfter) => valueAfter,
@@ -32,6 +20,16 @@ const actions = [
     type: 'deleted',
     check: (objBefore, ObjAfter, cKey) => _.has(objBefore, cKey) && !_.has(ObjAfter, cKey),
     action: _.identity,
+  },
+  {
+    type: 'unchanged',
+    check: (objBefore, objAfter, cKey) => (objBefore[cKey] === objAfter[cKey]),
+    action: _.identity,
+  },
+  {
+    type: 'changed',
+    check: (objBefore, objAfter, cKey) => (objBefore[cKey] !== objAfter[cKey]),
+    action: (valueBefore, valueAfter) => ({ keyBefore: valueBefore, keyAfter: valueAfter }),
   },
 ];
 
