@@ -1,8 +1,9 @@
 import _ from 'lodash';
 import fs from 'fs';
 import path from 'path';
+import { cons } from 'hexlet-pairs';
 import findParser from './parsers';
-import renderAst from './render';
+import renderAst from './renderers/plain';
 
 const actions = [
   {
@@ -21,21 +22,21 @@ const actions = [
     type: 'changed',
     check: (objBefore, objAfter, cKey) => (_.has(objBefore, cKey) && _.has(objAfter, cKey))
       && (objBefore[cKey] !== objAfter[cKey]),
-    action: (valueBefore, valueAfter) => [valueBefore, valueAfter],
+    action: (valueBefore, valueAfter) => cons(valueBefore, valueAfter),
   },
   {
     type: 'added',
     check: (objBefore, ObjAfter, cKey) => !_.has(objBefore, cKey) && _.has(ObjAfter, cKey),
-    action: (valueBefore, valueAfter) => valueAfter,
+    action: (_valueBefore, valueAfter) => valueAfter,
   },
   {
     type: 'deleted',
     check: (objBefore, ObjAfter, cKey) => _.has(objBefore, cKey) && !_.has(ObjAfter, cKey),
-    action: valueBefore => valueBefore,
+    action: _.identity,
   },
 ];
 
-export default (pathFileBefore, pathFileAfter) => {
+export default (pathFileBefore, pathFileAfter, format = 'simple') => {
   const objFileBefore = findParser(path.extname(pathFileBefore))(fs.readFileSync(pathFileBefore, 'utf8'));
   const objFileAfter = findParser(path.extname(pathFileBefore))(fs.readFileSync(pathFileAfter, 'utf8'));
 
@@ -54,5 +55,5 @@ export default (pathFileBefore, pathFileAfter) => {
     }, []);
     return ast;
   };
-  return renderAst(builderAst(objFileBefore, objFileAfter));
+  return renderAst(builderAst(objFileBefore, objFileAfter), format);
 };
