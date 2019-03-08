@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import fs from 'fs';
 import path from 'path';
-import { cons } from 'hexlet-pairs';
 import findParser from './parsers';
 import renderAst from './renderers/plain';
 
@@ -22,7 +21,7 @@ const actions = [
     type: 'changed',
     check: (objBefore, objAfter, cKey) => (_.has(objBefore, cKey) && _.has(objAfter, cKey))
       && (objBefore[cKey] !== objAfter[cKey]),
-    action: (valueBefore, valueAfter) => cons(valueBefore, valueAfter),
+    action: (valueBefore, valueAfter) => ({ keyBefore: valueBefore, keyAfter: valueAfter }),
   },
   {
     type: 'added',
@@ -37,23 +36,24 @@ const actions = [
 ];
 
 export default (pathFileBefore, pathFileAfter, format = 'simple') => {
-  const objFileBefore = findParser(path.extname(pathFileBefore))(fs.readFileSync(pathFileBefore, 'utf8'));
-  const objFileAfter = findParser(path.extname(pathFileBefore))(fs.readFileSync(pathFileAfter, 'utf8'));
+  const objBefore = findParser(path.extname(pathFileBefore))(fs.readFileSync(pathFileBefore, 'utf8'));
+  const objAfter = findParser(path.extname(pathFileBefore))(fs.readFileSync(pathFileAfter, 'utf8'));
 
-  const builderAst = (objBefore, objAfter) => {
-    const keysBefore = Object.keys(objBefore);
-    const keysAfter = Object.keys(objAfter);
+  const builderAst = (dataBefore, dataAfter) => {
+    const keysBefore = Object.keys(dataBefore);
+    const keysAfter = Object.keys(dataAfter);
     const unionKeys = _.union(keysBefore, keysAfter);
     const ast = unionKeys.reduce((acc, key) => {
-      const { type, action } = actions.find(({ check }) => check(objBefore, objAfter, key));
+      const { type, action } = actions.find(({ check }) => check(dataBefore, dataAfter, key));
       const root = {
         type,
         key,
-        value: action(objBefore[key], objAfter[key], builderAst),
+        value: type === 'parent' ? [] : action(dataBefore[key], dataAfter[key]),
+        children: type === 'parent' ? action(dataBefore[key], dataAfter[key], builderAst) : [],
       };
       return [...acc, root];
     }, []);
     return ast;
   };
-  return renderAst(builderAst(objFileBefore, objFileAfter), format);
+  return renderAst(builderAst(objBefore, objAfter), format);
 };
