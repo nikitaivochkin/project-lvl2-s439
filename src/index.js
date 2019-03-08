@@ -2,7 +2,7 @@ import _ from 'lodash';
 import fs from 'fs';
 import path from 'path';
 import findParser from './parsers';
-import renderAst from './renderers/plain';
+import renderAst from './renderers';
 
 const actions = [
   {
