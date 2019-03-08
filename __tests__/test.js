@@ -14,11 +14,13 @@ test.each([
   ['beforeTree.json', 'afterTree.json', 'expected2.txt'],
   ['beforeTree.yaml', 'afterTree.yaml', 'expected2.txt'],
   ['beforeTree.ini', 'afterTree.ini', 'expected3.txt'],
+  ['before.json', 'after.json', 'expectedPlain.txt', 'plain'],
+  ['beforeTree.json', 'afterTree.json', 'expectedPlain1.txt', 'plain'],
 ])(
   '.gendiff(%#)',
-  (fileNameBefore, fileNameAfter, expectedValue) => {
+  (fileNameBefore, fileNameAfter, expectedValue, format = 'simple') => {
     const getPath = fileName => path.join('__tests__', '__fixtures__', fileName);
     const expected = fs.readFileSync(getPath(expectedValue), 'utf8');
-    expect(gendiff(getPath(fileNameBefore), getPath(fileNameAfter))).toBe(expected);
+    expect(gendiff(getPath(fileNameBefore), getPath(fileNameAfter), format)).toBe(expected);
   },
 );
