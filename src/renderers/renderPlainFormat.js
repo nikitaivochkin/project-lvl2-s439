@@ -18,18 +18,18 @@ const iter = (el, ancestry, acc, str) => {
 const buildPath = (ast, str) => ast.map(obj => iter(obj, '', [], str));
 
 const actions = {
-  parent: (_data, key, _value, _valueNew, children, f) => f(children, key),
+  parent: (_data, key, _value, _newValue, children, f) => f(children, key),
   unchanged: () => null,
-  changed: (data, key, value, valueNew) => `Property '${_.flattenDeep(buildPath(data, key)).join('.')}' was updated. From ${renderValue(value)} to ${renderValue(valueNew)}`,
+  changed: (data, key, value, newValue) => `Property '${_.flattenDeep(buildPath(data, key)).join('.')}' was updated. From ${renderValue(value)} to ${renderValue(newValue)}`,
   added: (data, key, value) => `Property '${_.flattenDeep(buildPath(data, key)).join('.')}' was added with value: ${renderValue(value)}`,
   deleted: (data, key) => `Property '${_.flattenDeep(buildPath(data, key)).join('.')}' was removed`,
 };
 
 const renderNode = (data, node, renderAst) => {
   const {
-    type, key, value, valueNew, children,
+    type, key, value, newValue, children,
   } = node;
-  return actions[type](data, key, value, valueNew, children, renderAst);
+  return actions[type](data, key, value, newValue, children, renderAst);
 };
 
 export default (data) => {

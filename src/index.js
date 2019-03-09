@@ -29,7 +29,7 @@ const actions = [
   {
     type: 'changed',
     check: (objBefore, objAfter, cKey) => (objBefore[cKey] !== objAfter[cKey]),
-    action: (valueBefore, valueAfter) => ({ value: valueBefore, valueNew: valueAfter }),
+    action: (valueBefore, valueAfter) => ({ value: valueBefore, newValue: valueAfter }),
   },
 ];
 

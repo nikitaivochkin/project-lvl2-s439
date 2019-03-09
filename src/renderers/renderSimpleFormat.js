@@ -15,18 +15,18 @@ const stringify = (value, level) => {
 };
 
 const actions = {
-  parent: (indentLevel, key, _value, _valueNew, children, f) => `${getIndent(indentLevel + 1)}${key}: {\n${f(children, indentLevel + 1)}\n${getIndent(indentLevel + 1)}}`,
+  parent: (indentLevel, key, _value, _newValue, children, f) => `${getIndent(indentLevel + 1)}${key}: {\n${f(children, indentLevel + 1)}\n${getIndent(indentLevel + 1)}}`,
   unchanged: (indentLevel, key, value) => ` ${getIndent(indentLevel)} ${' '} ${key}: ${stringify(value, indentLevel)}`,
-  changed: (indentLevel, key, value, valueNew) => ` ${getIndent(indentLevel)} ${'-'} ${key}: ${stringify(value, indentLevel)}\n ${getIndent(indentLevel)} ${'+'} ${key}: ${stringify(valueNew, indentLevel)}`,
+  changed: (indentLevel, key, value, newValue) => ` ${getIndent(indentLevel)} ${'-'} ${key}: ${stringify(value, indentLevel)}\n ${getIndent(indentLevel)} ${'+'} ${key}: ${stringify(newValue, indentLevel)}`,
   added: (indentLevel, key, value) => ` ${getIndent(indentLevel)} ${'+'} ${key}: ${stringify(value, indentLevel)}`,
   deleted: (indentLevel, key, value) => ` ${getIndent(indentLevel)} ${'-'} ${key}: ${stringify(value, indentLevel)}`,
 };
 
 const renderNode = (node, indentLevel, renderAst) => {
   const {
-    type, key, value, valueNew, children,
+    type, key, value, newValue, children,
   } = node;
-  return actions[type](indentLevel, key, value, valueNew, children, renderAst);
+  return actions[type](indentLevel, key, value, newValue, children, renderAst);
 };
 
 export default (data) => {
