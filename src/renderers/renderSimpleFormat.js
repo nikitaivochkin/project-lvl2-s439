@@ -15,18 +15,18 @@ const stringify = (value, level) => {
 };
 
 const actions = {
-  parent: (key, _value, _valueOld, _valueNew, children, indentLevel, f) => `${getIndent(indentLevel + 1)}${key}: {\n${f(children, indentLevel + 1)}\n${getIndent(indentLevel + 1)}}`,
-  unchanged: (key, value, _valueOld, _valueNew, _children, indentLevel) => ` ${getIndent(indentLevel)} ${' '} ${key}: ${stringify(value, indentLevel)}`,
-  changed: (key, _value, valueOld, valueNew, _children, indentLevel) => ` ${getIndent(indentLevel)} ${'-'} ${key}: ${stringify(valueOld, indentLevel)}\n ${getIndent(indentLevel)} ${'+'} ${key}: ${stringify(valueNew, indentLevel)}`,
-  added: (key, value, _valueOld, _valueNew, _children, indentLevel) => ` ${getIndent(indentLevel)} ${'+'} ${key}: ${stringify(value, indentLevel)}`,
-  deleted: (key, value, _valueOld, _valueNew, _children, indentLevel) => ` ${getIndent(indentLevel)} ${'-'} ${key}: ${stringify(value, indentLevel)}`,
+  parent: (indentLevel, key, _value, _valueOld, _valueNew, children, f) => `${getIndent(indentLevel + 1)}${key}: {\n${f(children, indentLevel + 1)}\n${getIndent(indentLevel + 1)}}`,
+  unchanged: (indentLevel, key, value) => ` ${getIndent(indentLevel)} ${' '} ${key}: ${stringify(value, indentLevel)}`,
+  changed: (indentLevel, key, _value, valueOld, valueNew) => ` ${getIndent(indentLevel)} ${'-'} ${key}: ${stringify(valueOld, indentLevel)}\n ${getIndent(indentLevel)} ${'+'} ${key}: ${stringify(valueNew, indentLevel)}`,
+  added: (indentLevel, key, value) => ` ${getIndent(indentLevel)} ${'+'} ${key}: ${stringify(value, indentLevel)}`,
+  deleted: (indentLevel, key, value) => ` ${getIndent(indentLevel)} ${'-'} ${key}: ${stringify(value, indentLevel)}`,
 };
 
 const renderNode = (node, indentLevel, renderAst) => {
   const {
     type, key, value, valueOld, valueNew, children,
   } = node;
-  return actions[type](key, value, valueOld, valueNew, children, indentLevel, renderAst);
+  return actions[type](indentLevel, key, value, valueOld, valueNew, children, renderAst);
 };
 
 export default (data) => {
