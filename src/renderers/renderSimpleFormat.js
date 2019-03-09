@@ -5,31 +5,31 @@ const getIndent = (level) => {
   return ' '.repeat(level * deepIndent);
 };
 
-const stringify = (value, level) => {
+const stringify = (value, depth) => {
   if (!(value instanceof Object)) {
     return value;
   }
   const valueKeys = Object.keys(value);
-  const values = valueKeys.map(el => ` ${el}: ${stringify(value[el], level)}`);
-  return `{\n  ${getIndent(level + 1)} ${_.flatten(values).join('\n')}\n${getIndent(level + 1)}}`;
+  const values = valueKeys.map(el => ` ${el}: ${stringify(value[el], depth)}`);
+  return `{\n  ${getIndent(depth + 1)} ${_.flatten(values).join('\n')}\n${getIndent(depth + 1)}}`;
 };
 
 const actions = {
-  parent: (indentLevel, key, _value, _newValue, children, f) => `${getIndent(indentLevel + 1)}${key}: {\n${f(children, indentLevel + 1)}\n${getIndent(indentLevel + 1)}}`,
-  unchanged: (indentLevel, key, value) => ` ${getIndent(indentLevel)} ${' '} ${key}: ${stringify(value, indentLevel)}`,
-  changed: (indentLevel, key, value, newValue) => ` ${getIndent(indentLevel)} ${'-'} ${key}: ${stringify(value, indentLevel)}\n ${getIndent(indentLevel)} ${'+'} ${key}: ${stringify(newValue, indentLevel)}`,
-  added: (indentLevel, key, value) => ` ${getIndent(indentLevel)} ${'+'} ${key}: ${stringify(value, indentLevel)}`,
-  deleted: (indentLevel, key, value) => ` ${getIndent(indentLevel)} ${'-'} ${key}: ${stringify(value, indentLevel)}`,
+  parent: (depth, key, _value, _newValue, children, f) => `${getIndent(depth + 1)}${key}: {\n${f(children, depth + 1)}\n${getIndent(depth + 1)}}`,
+  unchanged: (depth, key, value) => ` ${getIndent(depth)} ${' '} ${key}: ${stringify(value, depth)}`,
+  changed: (depth, key, value, newValue) => ` ${getIndent(depth)} ${'-'} ${key}: ${stringify(value, depth)}\n ${getIndent(depth)} ${'+'} ${key}: ${stringify(newValue, depth)}`,
+  added: (depth, key, value) => ` ${getIndent(depth)} ${'+'} ${key}: ${stringify(value, depth)}`,
+  deleted: (depth, key, value) => ` ${getIndent(depth)} ${'-'} ${key}: ${stringify(value, depth)}`,
 };
 
-const renderNode = (node, indentLevel, renderAst) => {
+const renderNode = (node, depth, renderAst) => {
   const {
     type, key, value, newValue, children,
   } = node;
-  return actions[type](indentLevel, key, value, newValue, children, renderAst);
+  return actions[type](depth, key, value, newValue, children, renderAst);
 };
 
 export default (data) => {
-  const renderAst = (ast, indent = 0) => _.flatten(ast.map(obj => renderNode(obj, indent, renderAst))).join('\n');
+  const renderAst = (ast, depth = 0) => _.flatten(ast.map(obj => renderNode(obj, depth, renderAst))).join('\n');
   return `{\n${renderAst(data)}\n}`;
 };
