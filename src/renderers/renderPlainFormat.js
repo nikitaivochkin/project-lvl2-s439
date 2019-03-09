@@ -12,8 +12,7 @@ const iter = (el, ancestry, acc, str) => {
   const newAncestry = [...ancestry, el.key];
   if (el.children) {
     return el.children.reduce((nAcc, nn) => iter(nn, newAncestry, nAcc, str), acc);
-  }
-  return [...acc, newAncestry].filter(e => e.includes(str));
+  } return [...acc, newAncestry].filter(e => e.includes(str));
 };
 
 const buildPath = (ast, str) => ast.map(obj => iter(obj, '', [], str));
