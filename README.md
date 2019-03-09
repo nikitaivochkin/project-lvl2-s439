@@ -5,6 +5,9 @@
 ## gendiff
 Find difference in config files.
 
+## Supported formats: 
+.json, .yaml, .ini
+
 ## Install
 npm i -g nikita_ivochkin_project_2
 
