@@ -41,11 +41,10 @@ export default (pathFileBefore, pathFileAfter, format = 'simple') => {
     const keysBefore = Object.keys(dataBefore);
     const keysAfter = Object.keys(dataAfter);
     const unionKeys = _.union(keysBefore, keysAfter);
-    const ast = unionKeys.map((key) => {
+    return unionKeys.map((key) => {
       const { type, action } = actions.find(({ check }) => check(dataBefore, dataAfter, key));
       return { type, key, ...action(dataBefore[key], dataAfter[key], builderAst) };
     });
-    return ast;
   };
   return renderAst(builderAst(objBefore, objAfter), format);
 };
