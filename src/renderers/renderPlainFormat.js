@@ -8,14 +8,15 @@ const renderValue = (value) => {
   } return value;
 };
 
-const iter = (el, ancestry, acc, str) => {
-  const newAncestry = [...ancestry, el.key];
-  const values = Object.values({ ...el.children });
-  const newAcc = values.reduce((nAcc, nn) => iter(nn, newAncestry, nAcc, str), acc);
-  return [...newAcc, newAncestry].filter(e => e.includes(str));
-};
-
-const buildPath = (ast, str) => _.flattenDeep(ast.map(obj => iter(obj, '', [], str))).join('.');
+const buildPath = (ast, str) => _.flattenDeep(ast.map((obj) => {
+  const iter = (node, ancestry, acc) => {
+    const newAncestry = [...ancestry, node.key];
+    const newAcc = Object.values({ ...node.children })
+      .reduce((nAcc, nn) => iter(nn, newAncestry, nAcc), acc);
+    return node.key === str ? [...newAcc, newAncestry] : newAcc;
+  };
+  return iter(obj, '', []);
+})).join('.');
 
 const actions = {
   parent: (_data, key, _value, _newValue, children, f) => f(children, key),
