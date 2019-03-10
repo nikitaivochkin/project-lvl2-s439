@@ -15,14 +15,14 @@ const iter = (el, ancestry, acc, str) => {
   return [...newAcc, newAncestry].filter(e => e.includes(str));
 };
 
-const buildPath = (ast, str) => ast.map(obj => iter(obj, '', [], str));
+const buildPath = (ast, str) => _.flattenDeep(ast.map(obj => iter(obj, '', [], str))).join('.');
 
 const actions = {
   parent: (_data, key, _value, _newValue, children, f) => f(children, key),
   unchanged: () => null,
-  changed: (data, key, value, newValue) => `Property '${_.flattenDeep(buildPath(data, key)).join('.')}' was updated. From ${renderValue(value)} to ${renderValue(newValue)}`,
-  added: (data, key, value) => `Property '${_.flattenDeep(buildPath(data, key)).join('.')}' was added with value: ${renderValue(value)}`,
-  deleted: (data, key) => `Property '${_.flattenDeep(buildPath(data, key)).join('.')}' was removed`,
+  changed: (data, key, value, newValue) => `Property '${buildPath(data, key)}' was updated. From ${renderValue(value)} to ${renderValue(newValue)}`,
+  added: (data, key, value) => `Property '${buildPath(data, key)}' was added with value: ${renderValue(value)}`,
+  deleted: (data, key) => `Property '${buildPath(data, key)}' was removed`,
 };
 
 const renderNode = (data, node, renderAst) => {
