@@ -11,11 +11,9 @@ Find difference in config files.
 ## Install
 npm i -g nikita_ivochkin_project_2
 
-step 5
+## Example simple format.
 [![asciicast](https://asciinema.org/a/yNfkGJxz3Ep5tZoeXK6pXhERb.svg)](https://asciinema.org/a/yNfkGJxz3Ep5tZoeXK6pXhERb)
 
-step 6
+## Expample plain format.
 [![asciicast](https://asciinema.org/a/EnBdm2Vm5KohOSmJEbzMkBjqt.svg)](https://asciinema.org/a/EnBdm2Vm5KohOSmJEbzMkBjqt)
 
-step 7
-[![asciicast](https://asciinema.org/a/6udJ1QsraDHO1wLRq3v0sn2W6.svg)](https://asciinema.org/a/6udJ1QsraDHO1wLRq3v0sn2W6)
