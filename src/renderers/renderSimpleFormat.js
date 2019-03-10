@@ -14,10 +14,16 @@ const stringify = (value, depth) => {
   return `{\n  ${getIndent(depth + 1)} ${_.flatten(values).join('\n')}\n${getIndent(depth + 1)}}`;
 };
 
+const renderChangedNode = (depth, key, value, newValue) => {
+  const deletedStr = ` ${getIndent(depth)} ${'-'} ${key}: ${stringify(value, depth)}`;
+  const addedStr = ` ${getIndent(depth)} ${'+'} ${key}: ${stringify(newValue, depth)}`;
+  return [deletedStr, addedStr];
+};
+
 const actions = {
   parent: (depth, key, _value, _newValue, children, f) => `${getIndent(depth + 1)}${key}: {\n${f(children, depth + 1)}\n${getIndent(depth + 1)}}`,
   unchanged: (depth, key, value) => ` ${getIndent(depth)} ${' '} ${key}: ${stringify(value, depth)}`,
-  changed: (depth, key, value, newValue) => ` ${getIndent(depth)} ${'-'} ${key}: ${stringify(value, depth)}\n ${getIndent(depth)} ${'+'} ${key}: ${stringify(newValue, depth)}`,
+  changed: (depth, key, value, newValue) => _.flatten(renderChangedNode(depth, key, value, newValue)).join('\n'),
   added: (depth, key, value) => ` ${getIndent(depth)} ${'+'} ${key}: ${stringify(value, depth)}`,
   deleted: (depth, key, value) => ` ${getIndent(depth)} ${'-'} ${key}: ${stringify(value, depth)}`,
 };
