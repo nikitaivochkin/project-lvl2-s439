@@ -10,7 +10,7 @@ const renderValue = (value) => {
 
 const iter = (el, ancestry, acc, str) => {
   const newAncestry = [...ancestry, el.key];
-  const values = _.union(el, Object.values({ ...el.children }));
+  const values = Object.values({ ...el.children });
   const newAcc = values.reduce((nAcc, nn) => iter(nn, newAncestry, nAcc, str), acc);
   return [...newAcc, newAncestry].filter(e => e.includes(str));
 };
